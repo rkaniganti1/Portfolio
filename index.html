@@ -324,16 +324,17 @@
 <section id="work">
   <div class="section-head">
     <h2>Selected Work</h2>
-    <div class="count mono">12 SHOTS — REPLACE WITH YOUR OWN</div>
+    <div class="count mono">45 POSTS</div>
   </div>
 
   <div class="filters mono">
     <button class="active" data-filter="all">All</button>
     <button data-filter="dfr">DFR</button>
     <button data-filter="athletics">UTD Athletics</button>
-    <button data-filter="travel">Travel</button>
     <button data-filter="engagement">Engagement</button>
     <button data-filter="grad">Grad Pics</button>
+    <button data-filter="sorority">Sorority</button>
+    <button data-filter="redbull">Red Bull</button>
   </div>
 
   <div class="gallery" id="gallery"></div>
@@ -440,19 +441,24 @@
   // Until a file is found at a given path, a placeholder is shown
   // automatically — nothing breaks if some images aren't added yet.
   // ============================================================
+  // Helper to auto-generate a post list for a category — one placeholder
+  // image per post to start. If a post actually has multiple photos,
+  // just add more paths to that post's array, e.g.:
+  //   { category:"dfr", images:["images/dfr-01-1.jpg","images/dfr-01-2.jpg"] }
+  function makePosts(category, count){
+    return Array.from({length: count}, (_, i) => ({
+      category,
+      images: [`images/${category}-${String(i+1).padStart(2,'0')}-1.jpg`]
+    }));
+  }
+
   const posts = [
-    { category: "dfr",        images: ["images/dfr-01-1.jpg", "images/dfr-01-2.jpg", "images/dfr-01-3.jpg"] },
-    { category: "athletics",  images: ["images/athletics-01-1.jpg", "images/athletics-01-2.jpg"] },
-    { category: "travel",     images: ["images/travel-01-1.jpg", "images/travel-01-2.jpg", "images/travel-01-3.jpg"] },
-    { category: "engagement", images: ["images/engagement-01-1.jpg", "images/engagement-01-2.jpg"] },
-    { category: "grad",       images: ["images/grad-01-1.jpg", "images/grad-01-2.jpg"] },
-    { category: "dfr",        images: ["images/dfr-02-1.jpg", "images/dfr-02-2.jpg"] },
-    { category: "athletics",  images: ["images/athletics-02-1.jpg", "images/athletics-02-2.jpg", "images/athletics-02-3.jpg"] },
-    { category: "travel",     images: ["images/travel-02-1.jpg"] },
-    { category: "engagement", images: ["images/engagement-02-1.jpg"] },
-    { category: "grad",       images: ["images/grad-02-1.jpg", "images/grad-02-2.jpg"] },
-    { category: "dfr",        images: ["images/dfr-03-1.jpg", "images/dfr-03-2.jpg"] },
-    { category: "athletics",  images: ["images/athletics-03-1.jpg"] },
+    ...makePosts("dfr", 20),
+    ...makePosts("grad", 2),
+    ...makePosts("engagement", 3),
+    ...makePosts("sorority", 1),
+    ...makePosts("athletics", 13),
+    ...makePosts("redbull", 6),
   ];
 
   const gallery = document.getElementById('gallery');
