@@ -436,7 +436,6 @@
     <button data-filter="athletics">UTD Athletics</button>
     <button data-filter="engagement">Engagement</button>
     <button data-filter="grad">Grad Pics</button>
-    <button data-filter="sorority">Sorority</button>
     <button data-filter="redbull">Red Bull</button>
   </div>
 
@@ -565,35 +564,21 @@
   }
 
   const rawPosts = [
-    ...makePosts("dfr", 20),
+    ...makePosts("dfr", 5),
     ...makePosts("grad", 2),
     {
       category: "engagement",
       images: Array.from({length: 14}, (_, i) => `images/engagement-01-${i+1}.jpg`)
     },
     ...makePosts("engagement", 2).map((p, i) => ({ ...p, images: [`images/engagement-${String(i+2).padStart(2,'0')}-1.jpg`] })),
-    ...makePosts("sorority", 1),
-    ...makePosts("athletics", 13),
-    ...makePosts("redbull", 6),
+    ...makePosts("athletics", 5),
+    ...makePosts("redbull", 3),
   ];
 
   // ---- Limits ----
   // Every post's carousel is capped at 20 photos so a single event
-  // can't grow unbounded. How many POSTS show up per category is set
-  // here individually — set the number that fits how much of that
-  // kind of photo you actually have. Any category not listed falls
-  // back to DEFAULT_POST_LIMIT.
-  const MAX_IMAGES_PER_POST = 15;
-  const CATEGORY_POST_LIMITS = {
-    dfr: 5,
-    athletics: 5,
-    travel: 3,
-    engagement: 4,
-    grad: 2,
-    sorority: 1,
-    redbull: 3,
-  };
-  const DEFAULT_POST_LIMIT = 5;
+  // can't grow unbounded.
+  const MAX_IMAGES_PER_POST = 20;
 
   rawPosts.forEach(p => {
     if (p.images.length > MAX_IMAGES_PER_POST) {
@@ -601,12 +586,7 @@
     }
   });
 
-  const categoryCounts = {};
-  const posts = rawPosts.filter(p => {
-    categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1;
-    const limit = CATEGORY_POST_LIMITS[p.category] ?? DEFAULT_POST_LIMIT;
-    return categoryCounts[p.category] <= limit;
-  });
+  const posts = rawPosts;
 
   const gallery = document.getElementById('gallery');
   document.getElementById('postCount').textContent = `${posts.length} POSTS`;
