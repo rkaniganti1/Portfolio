@@ -455,7 +455,11 @@
   const posts = [
     ...makePosts("dfr", 20),
     ...makePosts("grad", 2),
-    ...makePosts("engagement", 3),
+    {
+      category: "engagement",
+      images: Array.from({length: 14}, (_, i) => `images/engagement-01-${i+1}.jpg`)
+    },
+    ...makePosts("engagement", 2).map((p, i) => ({ ...p, images: [`images/engagement-${String(i+2).padStart(2,'0')}-1.jpg`] })),
     ...makePosts("sorority", 1),
     ...makePosts("athletics", 13),
     ...makePosts("redbull", 6),
