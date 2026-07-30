@@ -538,85 +538,100 @@
 
 <script>
   // ============================================================
-  // POST DATA — this is the only part you need to edit to add
-  // your real photos. Each entry is one "post" / event, matching
-  // how Instagram carousels work: a post can have 1 or several
-  // photos. The grid shows the first photo as the cover; clicking
-  // it opens all of that post's photos as a carousel.
+  // POST DATA — fully automatic. Every post checks for up to 20
+  // numbered photos and uses whichever ones actually exist.
   //
-  //   category: one of dfr | athletics | travel | engagement | grad
-  //   images:   array of file paths, in the order you want them
-  //             to appear in the carousel
-  //
-  // Put your image files in an "images" folder next to this file.
-  // Until a file is found at a given path, a placeholder is shown
-  // automatically — nothing breaks if some images aren't added yet.
+  // To add photos: just drop files in the "images" folder named
+  //   images/{category}-{post#}-{photo#}.jpg
+  // e.g. images/dfr-01-1.jpg, images/dfr-01-2.jpg, images/dfr-01-3.jpg
+  // for post #1's carousel, images/dfr-02-1.jpg for post #2, etc.
+  // A post can have anywhere from 1 to 20 photos — no code edits
+  // needed either way, missing numbers are just skipped.
   // ============================================================
-  // Helper to auto-generate a post list for a category — one placeholder
-  // image per post to start. If a post actually has multiple photos,
-  // just add more paths to that post's array, e.g.:
-  //   { category:"dfr", images:["images/dfr-01-1.jpg","images/dfr-01-2.jpg"] }
-  function makePosts(category, count){
-    return Array.from({length: count}, (_, i) => ({
-      category,
-      images: [`images/${category}-${String(i+1).padStart(2,'0')}-1.jpg`]
-    }));
-  }
-
-  const rawPosts = [
-    ...makePosts("dfr", 5),
-    ...makePosts("grad", 2),
-    {
-      category: "engagement",
-      images: Array.from({length: 14}, (_, i) => `images/engagement-01-${i+1}.jpg`)
-    },
-    ...makePosts("engagement", 2).map((p, i) => ({ ...p, images: [`images/engagement-${String(i+2).padStart(2,'0')}-1.jpg`] })),
-    ...makePosts("athletics", 5),
-    ...makePosts("redbull", 3),
-  ];
-
-  // ---- Limits ----
-  // Every post's carousel is capped at 20 photos so a single event
-  // can't grow unbounded.
+  const CATEGORY_POST_COUNTS = {
+    dfr: 5,
+    grad: 2,
+    engagement: 3,
+    athletics: 5,
+    redbull: 3,
+  };
   const MAX_IMAGES_PER_POST = 20;
 
-  rawPosts.forEach(p => {
-    if (p.images.length > MAX_IMAGES_PER_POST) {
-      p.images = p.images.slice(0, MAX_IMAGES_PER_POST);
-    }
+  function imageExists(src){
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = src;
+    });
+  }
+
+  async function buildPost(category, postNum){
+    const num = String(postNum).padStart(2, '0');
+    const checks = Array.from({length: MAX_IMAGES_PER_POST}, (_, i) =>
+      imageExists(`images/${category}-${num}-${i+1}.jpg`)
+    );
+    const results = await Promise.all(checks);
+    const images = [];
+    results.forEach((exists, i) => {
+      if(exists) images.push(`images/${category}-${num}-${i+1}.jpg`);
+    });
+    // If nothing exists yet, still show a placeholder for photo 1
+    // so the post is visible and ready for its first upload.
+    if(images.length === 0) images.push(`images/${category}-${num}-1.jpg`);
+    return { category, images };
+  }
+
+  async function buildAllPosts(){
+    const jobs = [];
+    Object.entries(CATEGORY_POST_COUNTS).forEach(([category, count]) => {
+      for(let n = 1; n <= count; n++){
+        jobs.push(buildPost(category, n));
+      }
+    });
+    return Promise.all(jobs);
+  }
+
+  let posts = [];
+
+  buildAllPosts().then(built => {
+    posts = built;
+    renderGallery();
   });
 
-  const posts = rawPosts;
+  function renderGallery(){
+    const gallery = document.getElementById('gallery');
+    gallery.innerHTML = '';
+    document.getElementById('postCount').textContent = `${posts.length} POSTS`;
 
-  const gallery = document.getElementById('gallery');
-  document.getElementById('postCount').textContent = `${posts.length} POSTS`;
-
-
-  posts.forEach((post, i) => {
-    const num = String(i + 1).padStart(2, '0');
-    const cover = post.images[0];
-    const frame = document.createElement('div');
-    frame.className = 'frame';
-    frame.dataset.category = post.category;
-    frame.innerHTML = `
-      <div class="frame-media">
-        <img src="${cover}" alt="${post.category} ${num}"
-             onload="this.parentElement.classList.add('loaded')"
-             onerror="this.style.display='none'">
-        <div class="placeholder-label">
-          <span class="plus">+</span>
-          <span class="path">${cover}</span>
+    const perCategoryIndex = {};
+    posts.forEach((post, i) => {
+      perCategoryIndex[post.category] = (perCategoryIndex[post.category] || 0) + 1;
+      const num = String(perCategoryIndex[post.category]).padStart(2, '0');
+      const cover = post.images[0];
+      const frame = document.createElement('div');
+      frame.className = 'frame';
+      frame.dataset.category = post.category;
+      frame.innerHTML = `
+        <div class="frame-media">
+          <img src="${cover}" alt="${post.category} ${num}"
+               onload="this.parentElement.classList.add('loaded')"
+               onerror="this.style.display='none'">
+          <div class="placeholder-label">
+            <span class="plus">+</span>
+            <span class="path">${cover}</span>
+          </div>
+          ${post.images.length > 1 ? `<div class="stack-badge mono">1/${post.images.length}</div>` : ``}
         </div>
-        ${post.images.length > 1 ? `<div class="stack-badge mono">1/${post.images.length}</div>` : ``}
-      </div>
-      <div class="frame-caption">
-        <span class="exp">NO. ${num}</span>
-        <span class="cat">${post.category}</span>
-      </div>
-    `;
-    frame.addEventListener('click', () => openLightbox(i));
-    gallery.appendChild(frame);
-  });
+        <div class="frame-caption">
+          <span class="exp">NO. ${num}</span>
+          <span class="cat">${post.category}</span>
+        </div>
+      `;
+      frame.addEventListener('click', () => openLightbox(i));
+      gallery.appendChild(frame);
+    });
+  }
 
   // filters
   document.querySelectorAll('.filters button').forEach(btn => {
@@ -647,7 +662,11 @@
 
   function renderLightbox(){
     const post = posts[activePost];
-    const num = String(activePost + 1).padStart(2, '0');
+    let num = 1;
+    for(let i = 0; i < activePost; i++){
+      if(posts[i].category === post.category) num++;
+    }
+    num = String(num).padStart(2, '0');
     const src = post.images[activeImage];
 
     lightboxMedia.innerHTML = `
