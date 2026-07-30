@@ -369,7 +369,15 @@
   }
   .lightbox-cap{
     font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--muted);
-    display:flex;gap:20px;
+    display:flex;flex-wrap:wrap;gap:10px 20px;
+    justify-content:center;align-items:center;
+    max-width:min(900px,90vw);
+  }
+  .lightbox-cap span{white-space:nowrap;}
+  .lb-dots{max-width:100%;flex-wrap:wrap;row-gap:8px;}
+  @media (max-width:640px){
+    .lightbox{padding:20px 16px;gap:14px;}
+    .lightbox-cap{font-size:.66rem;gap:8px 14px;}
   }
   .lightbox-close{
     position:absolute;top:24px;right:32px;
