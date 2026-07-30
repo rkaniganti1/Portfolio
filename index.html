@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rithvik Kaniganti — Photography</title>
+<title>Rithvik Kaniganti · Photography</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -77,35 +77,47 @@
     max-width:1200px;margin:0 auto;
     position:relative;
   }
-  .hero-inner{
-    display:flex;align-items:center;justify-content:space-between;gap:56px;
-  }
-  .hero-text{flex:1 1 480px;}
   .hero-photo{
-    flex:0 0 260px;
-    width:260px;height:320px;
-    border:1px solid var(--line);
-    background:#0e0e0e;
-    position:relative;overflow:hidden;
+    position:absolute;
+    top:0;right:0;bottom:0;
+    width:60%;
+    z-index:1;
+    overflow:hidden;
     opacity:0;
     animation:heroFadeIn 1.3s ease forwards;
     animation-delay:.25s;
   }
   .hero-photo::after{
     content:"";position:absolute;inset:0;
-    box-shadow:inset 0 0 0 1px rgba(255,106,19,.25);
+    background:linear-gradient(90deg,
+      var(--bg) 0%,
+      rgba(10,10,10,.75) 26%,
+      rgba(10,10,10,.25) 52%,
+      rgba(10,10,10,0) 72%);
   }
   .hero-photo img{
     width:100%;height:100%;object-fit:cover;
-    filter:grayscale(10%) contrast(1.05);
+    filter:grayscale(10%) contrast(1.05) brightness(.9);
   }
   @keyframes heroFadeIn{
-    from{opacity:0;transform:translateY(14px);}
-    to{opacity:1;transform:translateY(0);}
+    from{opacity:0;}
+    to{opacity:1;}
   }
-  @media (max-width:760px){
-    .hero-inner{flex-direction:column-reverse;gap:30px;}
-    .hero-photo{width:190px;height:230px;flex:0 0 auto;}
+  .hero-text{
+    position:relative;z-index:2;
+    max-width:720px;
+  }
+  .hero-text .sub, .hero-text .meta-row{
+    max-width:46ch;
+  }
+  @media (max-width:900px){
+    .hero-photo{
+      position:static;width:100%;height:280px;margin-bottom:32px;
+    }
+    .hero-photo::after{
+      background:linear-gradient(180deg, rgba(10,10,10,0) 55%, var(--bg) 100%);
+    }
+    .hero-text{max-width:100%;}
   }
   .hero .eyebrow{
     font-size:.72rem;letter-spacing:.18em;color:var(--amber);
@@ -118,7 +130,8 @@
     letter-spacing:.005em;
     font-size:clamp(2.6rem, 7vw, 5.6rem);
     line-height:1.0;
-    max-width:16ch;
+    max-width:20ch;
+    text-shadow:0 4px 30px rgba(0,0,0,.7);
   }
   .hero h1 .accent{
     font-style:normal;font-weight:600;color:var(--amber);
@@ -132,7 +145,9 @@
   }
   .hero .meta-row{
     margin-top:44px;
-    display:flex;gap:36px;flex-wrap:wrap;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(150px, max-content));
+    gap:28px 40px;
   }
   .hero .meta-row div{font-size:.72rem;color:var(--muted);}
   .hero .meta-row span{
@@ -373,19 +388,19 @@
 <!-- ============ HERO ============ -->
 <div class="hero">
   <div class="hero-inner">
+    <div class="hero-photo">
+      <img src="images/profile.jpg" alt="Rithvik Kaniganti">
+    </div>
     <div class="hero-text">
-      <div class="eyebrow mono">Frisco / Dallas, TX — Photography &amp; Visual Storytelling</div>
+      <div class="eyebrow mono">Frisco / Dallas, TX · Photography &amp; Visual Storytelling</div>
       <h1>Rithvik Kaniganti, <span class="accent">shooting the moments</span> that matter.</h1>
-      <p class="sub">Sports, event, and motorsport photographer working across UTD Athletics and Dallas Formula Racing — with a track record of turning single frames into content that reaches hundreds of thousands.</p>
+      <p class="sub">Sports, event, and motorsport photographer working across UTD Athletics and Dallas Formula Racing, with a track record of turning single frames into content that reaches hundreds of thousands.</p>
       <div class="meta-row mono">
         <div>Based in<span>Frisco / Dallas, TX</span></div>
         <div>Focus<span>DFR · Athletics · Travel · Grad</span></div>
         <div>Reach<span>960K+ IG views YTD on DFR account</span></div>
         <div>Instagram<span>@rick_the_pic_guy</span></div>
       </div>
-    </div>
-    <div class="hero-photo">
-      <img src="images/profile.jpg" alt="Rithvik Kaniganti">
     </div>
   </div>
 </div>
@@ -414,7 +429,6 @@
 <section id="credentials">
   <div class="section-head">
     <h2>Where the work lives</h2>
-    <div class="count mono">03 / PIT CREDENTIALS</div>
   </div>
   <div class="gallery" style="grid-template-columns:repeat(auto-fill, minmax(300px,1fr));">
     <div class="frame" style="cursor:default;">
@@ -435,7 +449,14 @@
       <div class="frame-caption" style="padding:20px;flex-direction:column;align-items:flex-start;gap:8px;">
         <span class="exp">DALLAS FORMULA RACING</span>
         <span style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--paper);text-transform:none;">Marketing Director</span>
-        <span class="cat" style="text-transform:none;line-height:1.6;">Direct content creation and photography/videography for recruitment, sponsor outreach, and event coverage — part of a digital presence reaching 960K+ IG views YTD. Jan 2024 – Present.</span>
+        <span class="cat" style="text-transform:none;line-height:1.6;">Direct content creation and photography/videography for recruitment, sponsor outreach, and event coverage, contributing to a digital presence reaching 960K+ IG views YTD. Jan 2024 – Present.</span>
+      </div>
+    </div>
+    <div class="frame" style="cursor:default;">
+      <div class="frame-caption" style="padding:20px;flex-direction:column;align-items:flex-start;gap:8px;">
+        <span class="exp">UTD TV</span>
+        <span style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--paper);text-transform:none;">Marketing Specialist</span>
+        <span class="cat" style="text-transform:none;line-height:1.6;">Developed marketing strategies and social content to grow student viewership, partnering with production teams to promote shows and track campaigns for reach and retention.</span>
       </div>
     </div>
   </div>
@@ -444,12 +465,11 @@
 <section id="about">
   <div class="section-head">
     <h2>About</h2>
-    <div class="count mono">01 / DRIVER NOTES</div>
   </div>
   <div class="about-grid">
     <div>
-      <p>I'm a Business Analytics & AI student at UT Dallas who got into photography through the organizations I work with — first as a way to document events, now as a core part of how I approach marketing and brand storytelling. I shoot sports for UTD Athletics and everything from sponsor content to team culture and race-day action for Dallas Formula Racing.</p>
-      <p>Outside of that, I shoot travel, engagements, and grad photos — projects where I get to slow down and focus on people rather than a play clock. Across it all, I care about frames that actually get used: content built to move a feed, tell a brand's story, or capture a moment someone will want to keep.</p>
+      <p>I'm a Business Analytics & AI student at UT Dallas who got into photography through the organizations I work with, first as a way to document events, now as a core part of how I approach marketing and brand storytelling. I shoot sports for UTD Athletics and everything from sponsor content to team culture and race-day action for Dallas Formula Racing.</p>
+      <p>Outside of that, I shoot travel, engagements, and grad photos, projects where I get to slow down and focus on people rather than a play clock. Across it all, I care about frames that actually get used: content built to move a feed, tell a brand's story, or capture a moment someone will want to keep.</p>
     </div>
     <div class="specs-col">
       <div class="driver-card">
@@ -470,21 +490,17 @@
 
 <!-- ============ CONTACT ============ -->
 <section id="contact">
-  <div class="section-head">
-    <h2>Get in touch</h2>
-    <div class="count mono">02 / PIT LANE</div>
-  </div>
   <div class="contact">
     <h2>Let's make<br>something.</h2>
     <div class="contact-links">
-      <a href="https://www.instagram.com/rick_the_pic_guy" target="_blank" rel="noopener">Instagram — @rick_the_pic_guy ↗</a>
-      <a href="mailto:krithviksai@gmail.com">Email — krithviksai@gmail.com</a>
-      <a href="tel:+14698850640">Phone — (469) 885-0640</a>
+      <a href="https://www.instagram.com/rick_the_pic_guy" target="_blank" rel="noopener">Instagram · @rick_the_pic_guy ↗</a>
+      <a href="mailto:krithviksai@gmail.com">Email · krithviksai@gmail.com</a>
+      <a href="tel:+14698850640">Phone · (469) 885-0640</a>
     </div>
   </div>
 </section>
 
-<footer>© 2026 RITHVIK KANIGANTI — DALLAS, TX</footer>
+<footer>© 2026 Rithvik Kaniganti</footer>
 
 <!-- ============ LIGHTBOX ============ -->
 <div class="lightbox" id="lightbox">
@@ -536,12 +552,22 @@
   ];
 
   // ---- Limits ----
-  // Each post's carousel is capped at 20 photos, and the grid only
-  // shows the 5 most recent posts per category to keep it from
-  // getting overwhelming. Raise MAX_POSTS_PER_CATEGORY if you want
-  // more visible at once.
+  // Every post's carousel is capped at 20 photos so a single event
+  // can't grow unbounded. How many POSTS show up per category is set
+  // here individually — set the number that fits how much of that
+  // kind of photo you actually have. Any category not listed falls
+  // back to DEFAULT_POST_LIMIT.
   const MAX_IMAGES_PER_POST = 20;
-  const MAX_POSTS_PER_CATEGORY = 5;
+  const CATEGORY_POST_LIMITS = {
+    dfr: 5,
+    athletics: 5,
+    travel: 3,
+    engagement: 4,
+    grad: 2,
+    sorority: 1,
+    redbull: 3,
+  };
+  const DEFAULT_POST_LIMIT = 5;
 
   rawPosts.forEach(p => {
     if (p.images.length > MAX_IMAGES_PER_POST) {
@@ -552,11 +578,13 @@
   const categoryCounts = {};
   const posts = rawPosts.filter(p => {
     categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1;
-    return categoryCounts[p.category] <= MAX_POSTS_PER_CATEGORY;
+    const limit = CATEGORY_POST_LIMITS[p.category] ?? DEFAULT_POST_LIMIT;
+    return categoryCounts[p.category] <= limit;
   });
 
   const gallery = document.getElementById('gallery');
-  document.getElementById('postCount').textContent = `${posts.length} POSTS — TOP ${MAX_POSTS_PER_CATEGORY} PER SECTION`;
+  document.getElementById('postCount').textContent = `${posts.length} POSTS`;
+
 
   posts.forEach((post, i) => {
     const num = String(i + 1).padStart(2, '0');
